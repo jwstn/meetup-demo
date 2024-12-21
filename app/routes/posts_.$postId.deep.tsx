@@ -1,5 +1,8 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { TypographyH4 } from "@/components/typography";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { postQueryOptions } from "../utils/posts";
 import { PostErrorComponent } from "./posts.$postId";
 
@@ -28,12 +31,17 @@ function PostDeepComponent() {
     <div className="p-2 space-y-2">
       <Link
         to="/posts"
-        className="block py-1 text-blue-800 hover:text-blue-600"
+        className={cn(
+          buttonVariants({ variant: "link" }),
+          "text-blue-500 text-base",
+        )}
       >
         ← All Posts
       </Link>
-      <h4 className="text-xl font-bold underline">{postQuery.data.title}</h4>
-      <div className="text-sm">{postQuery.data.body}</div>
+      <div className="px-4 space-y-2">
+        <TypographyH4>{postQuery.data.title}</TypographyH4>
+        <div className="text-sm">{postQuery.data.body}</div>
+      </div>
     </div>
   );
 }

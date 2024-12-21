@@ -1,13 +1,15 @@
+import { AppSidebar } from "@/components/AppSidebar";
 import { DefaultCatchBoundary } from "@/components/DefaultCatchBoundary";
 import { NotFound } from "@/components/NotFound";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+
 import appCss from "@/styles/app.css?url";
 import { seo } from "@/utils/seo";
+import { usersQueryOptions } from "@/utils/users";
 import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
-  Link,
   Outlet,
   ScrollRestoration,
   createRootRouteWithContext,
@@ -66,6 +68,9 @@ export const Route = createRootRouteWithContext<{
     );
   },
   notFoundComponent: () => <NotFound />,
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(usersQueryOptions());
+  },
   component: RootComponent,
 });
 
@@ -79,52 +84,16 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html>
+    <html lang="en">
       <head>
         <Meta />
       </head>
       <body>
-        <div className="p-2 flex gap-2 text-lg">
-          <Link
-            className={cn(buttonVariants({ variant: "link" }), "text-lg")}
-            to="/"
-          >
-            Home
-          </Link>
-          <Link
-            className={cn(buttonVariants({ variant: "link" }), "text-lg")}
-            to="/posts"
-          >
-            Posts
-          </Link>
-          <Link
-            className={cn(buttonVariants({ variant: "link" }), "text-lg")}
-            to="/users"
-          >
-            Users
-          </Link>
-          <Link
-            className={cn(buttonVariants({ variant: "link" }), "text-lg")}
-            to="/layout-a"
-          >
-            Layout
-          </Link>
-          <Link
-            className={cn(buttonVariants({ variant: "link" }), "text-lg")}
-            to="/deferred"
-          >
-            Deferred
-          </Link>
-          <Link
-            className={cn(buttonVariants({ variant: "link" }), "text-lg")}
-            // @ts-expect-error
-            to="/this-route-does-not-exist"
-          >
-            This Route Does Not Exist
-          </Link>
-        </div>
-        <hr />
-        {children}
+        <SidebarProvider>
+          <AppSidebar />
+          <main className="p-4">{children}</main>
+        </SidebarProvider>
+
         <ScrollRestoration />
         <TanStackRouterDevtools position="bottom-right" />
         <ReactQueryDevtools buttonPosition="bottom-left" />

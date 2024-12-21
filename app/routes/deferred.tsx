@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense, useState } from "react";
@@ -8,7 +9,7 @@ const deferredQueryOptions = () =>
     queryFn: async () => {
       await new Promise((r) => setTimeout(r, 3000));
       return {
-        message: `Hello deferred from the server!`,
+        message: "Hello deferred from the server!",
         status: "success",
         time: new Date(),
       };
@@ -33,7 +34,7 @@ function Deferred() {
       </Suspense>
       <div>Count: {count}</div>
       <div>
-        <button onClick={() => setCount(count + 1)}>Increment</button>
+        <Button onClick={() => setCount(count + 1)}>Increment</Button>
       </div>
     </div>
   );
