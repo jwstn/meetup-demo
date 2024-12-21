@@ -1,10 +1,10 @@
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -38,6 +38,9 @@ export function AppSidebar() {
         </form>
         <SidebarGroup>
           <SidebarGroupContent>
+            <SidebarGroupLabel className="text-base">
+              Contacts
+            </SidebarGroupLabel>
             <SidebarMenu>
               {[...usersQuery.data].map((item) => (
                 <SidebarMenuItem key={item.id}>
