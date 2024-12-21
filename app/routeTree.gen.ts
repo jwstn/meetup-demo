@@ -16,6 +16,7 @@ import { Route as PostsImport } from './routes/posts'
 import { Route as DeferredImport } from './routes/deferred'
 import { Route as IndexImport } from './routes/index'
 import { Route as PostsIndexImport } from './routes/posts.index'
+import { Route as UsersNewImport } from './routes/users.new'
 import { Route as UsersUserIdImport } from './routes/users.$userId'
 import { Route as PostsPostIdImport } from './routes/posts.$postId'
 import { Route as PostsPostIdDeepImport } from './routes/posts_.$postId.deep'
@@ -50,6 +51,12 @@ const PostsIndexRoute = PostsIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PostsRoute,
+} as any)
+
+const UsersNewRoute = UsersNewImport.update({
+  id: '/users/new',
+  path: '/users/new',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const UsersUserIdRoute = UsersUserIdImport.update({
@@ -116,6 +123,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UsersUserIdImport
       parentRoute: typeof rootRoute
     }
+    '/users/new': {
+      id: '/users/new'
+      path: '/users/new'
+      fullPath: '/users/new'
+      preLoaderRoute: typeof UsersNewImport
+      parentRoute: typeof rootRoute
+    }
     '/posts/': {
       id: '/posts/'
       path: '/'
@@ -154,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/redirect': typeof RedirectRoute
   '/posts/$postId': typeof PostsPostIdRoute
   '/users/$userId': typeof UsersUserIdRoute
+  '/users/new': typeof UsersNewRoute
   '/posts/': typeof PostsIndexRoute
   '/posts/$postId/deep': typeof PostsPostIdDeepRoute
 }
@@ -164,6 +179,7 @@ export interface FileRoutesByTo {
   '/redirect': typeof RedirectRoute
   '/posts/$postId': typeof PostsPostIdRoute
   '/users/$userId': typeof UsersUserIdRoute
+  '/users/new': typeof UsersNewRoute
   '/posts': typeof PostsIndexRoute
   '/posts/$postId/deep': typeof PostsPostIdDeepRoute
 }
@@ -176,6 +192,7 @@ export interface FileRoutesById {
   '/redirect': typeof RedirectRoute
   '/posts/$postId': typeof PostsPostIdRoute
   '/users/$userId': typeof UsersUserIdRoute
+  '/users/new': typeof UsersNewRoute
   '/posts/': typeof PostsIndexRoute
   '/posts_/$postId/deep': typeof PostsPostIdDeepRoute
 }
@@ -189,6 +206,7 @@ export interface FileRouteTypes {
     | '/redirect'
     | '/posts/$postId'
     | '/users/$userId'
+    | '/users/new'
     | '/posts/'
     | '/posts/$postId/deep'
   fileRoutesByTo: FileRoutesByTo
@@ -198,6 +216,7 @@ export interface FileRouteTypes {
     | '/redirect'
     | '/posts/$postId'
     | '/users/$userId'
+    | '/users/new'
     | '/posts'
     | '/posts/$postId/deep'
   id:
@@ -208,6 +227,7 @@ export interface FileRouteTypes {
     | '/redirect'
     | '/posts/$postId'
     | '/users/$userId'
+    | '/users/new'
     | '/posts/'
     | '/posts_/$postId/deep'
   fileRoutesById: FileRoutesById
@@ -219,6 +239,7 @@ export interface RootRouteChildren {
   PostsRoute: typeof PostsRouteWithChildren
   RedirectRoute: typeof RedirectRoute
   UsersUserIdRoute: typeof UsersUserIdRoute
+  UsersNewRoute: typeof UsersNewRoute
   PostsPostIdDeepRoute: typeof PostsPostIdDeepRoute
 }
 
@@ -228,6 +249,7 @@ const rootRouteChildren: RootRouteChildren = {
   PostsRoute: PostsRouteWithChildren,
   RedirectRoute: RedirectRoute,
   UsersUserIdRoute: UsersUserIdRoute,
+  UsersNewRoute: UsersNewRoute,
   PostsPostIdDeepRoute: PostsPostIdDeepRoute,
 }
 
@@ -246,6 +268,7 @@ export const routeTree = rootRoute
         "/posts",
         "/redirect",
         "/users/$userId",
+        "/users/new",
         "/posts_/$postId/deep"
       ]
     },
@@ -271,6 +294,9 @@ export const routeTree = rootRoute
     },
     "/users/$userId": {
       "filePath": "users.$userId.tsx"
+    },
+    "/users/new": {
+      "filePath": "users.new.tsx"
     },
     "/posts/": {
       "filePath": "posts.index.tsx",

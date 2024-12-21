@@ -15,7 +15,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 
 import { Input } from "@/components/ui/input";
-import { SearchIcon } from "lucide-react";
+import { PlusCircleIcon } from "lucide-react";
 
 export function AppSidebar() {
   const usersQuery = useSuspenseQuery(usersQueryOptions());
@@ -29,9 +29,12 @@ export function AppSidebar() {
             className="w-full"
             aria-label="Search users"
           />
-          <Button size="icon">
-            <SearchIcon className="size-4" />
-          </Button>
+          <Link
+            to="/users/new"
+            className={cn(buttonVariants({ size: "icon" }), "min-w-10")}
+          >
+            <PlusCircleIcon />
+          </Link>
         </form>
         <SidebarGroup>
           <SidebarGroupContent>
