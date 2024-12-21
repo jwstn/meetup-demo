@@ -1,103 +1,86 @@
-import { Input } from "@/components/ui/input";
-
+import { FormProvider, useForm } from "@conform-to/react";
+import { parseWithZod } from "@conform-to/zod";
 import { Link, createFileRoute } from "@tanstack/react-router";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import type { FormEvent } from "react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
+
 import { cn } from "@/lib/utils";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+
+import { client } from "@/api-client";
+import { createUserFormSchema } from "@/routes/api/users.new";
 
 export const Route = createFileRoute("/users/new")({
   component: RouteComponent,
 });
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  email: z
-    .string()
-    .min(2, {
-      message: "email must be at least 2 characters.",
-    })
-    .email(),
-  description: z.string().optional(),
-});
-
 function RouteComponent() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      description: "",
+  const [form, fields] = useForm({
+    onValidate: ({ formData }) => {
+      return parseWithZod(formData, { schema: createUserFormSchema });
     },
+    defaultValue: {
+      name: "foo bar",
+      email: "foo.bar@fondof.de",
+      description: "daskhdash dajshd jkashd jkashdjkhas jkdahsdjkhas",
+    },
+    onSubmit: async (event: FormEvent) => {
+      event.preventDefault();
+      await client.post("users/new", {
+        json: event,
+      });
+    },
+    shouldValidate: "onBlur",
+    shouldRevalidate: "onInput",
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
-
   return (
-    <Form {...form}>
+    <FormProvider context={form.context}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 max-w-screen-lg"
+        id={form.id}
+        method="post"
+        onSubmit={form.onSubmit}
+        className="max-w-screen-lg space-y-4"
       >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="name of your contact" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>E-Mail</FormLabel>
-              <FormControl>
-                <Input placeholder="the contacts email..." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Descriptionm</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="write something about this contact"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="space-y-2">
+          <Label htmlFor="name-input">Name</Label>
+          <Input
+            type="text"
+            placeholder="the name of your contact"
+            id="name-input"
+            key={fields.name.key}
+            name={fields.name.name}
+            defaultValue={fields.name.initialValue}
+          />
+          <span className="text-red-500">{fields.name.errors}</span>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="name-input">E-Mail</Label>
+          <Input
+            type="email"
+            placeholder="E-Mail"
+            id="email-input"
+            key={fields.email.key}
+            name={fields.email.name}
+            defaultValue={fields.email.initialValue}
+          />
+          <span className="text-red-500">{fields.email.errors}</span>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="name-input">Description</Label>
+          <Textarea
+            placeholder="Descripte your contact"
+            id="description-input"
+            key={fields.description.key}
+            name={fields.description.name}
+            defaultValue={fields.description.initialValue}
+          />
+          <span className="text-red-500">{fields.description.errors}</span>
+        </div>
         <div className="flex space-x-2">
           <Button type="submit">Submit</Button>
           <Link
@@ -108,6 +91,6 @@ function RouteComponent() {
           </Link>
         </div>
       </form>
-    </Form>
+    </FormProvider>
   );
 }
