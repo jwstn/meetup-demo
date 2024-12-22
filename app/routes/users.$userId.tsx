@@ -1,8 +1,9 @@
 import { NotFound } from "@/components/NotFound";
 import { TypographyH1, TypographyP } from "@/components/typography";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { userQueryOptions } from "@/utils/users";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { ErrorComponent, createFileRoute } from "@tanstack/react-router";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { Trash2Icon } from "lucide-react";
@@ -34,11 +35,14 @@ function UserComponent() {
         <TypographyH1>{user.name}</TypographyH1>
         <TypographyP>{user.email}</TypographyP>
       </div>
-      <form className="w-full flex justify-end">
-        <Button type="submit" variant="destructive" size="icon">
-          <Trash2Icon />
-        </Button>
-      </form>
+
+      <Link
+        to="/delete/$userid"
+        params={{ userid: String(user.id) }}
+        className={buttonVariants({ variant: "destructive", size: "icon" })}
+      >
+        <Trash2Icon />
+      </Link>
     </div>
   );
 }

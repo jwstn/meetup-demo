@@ -11,19 +11,13 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as RedirectImport } from './routes/redirect'
 import { Route as DeferredImport } from './routes/deferred'
 import { Route as IndexImport } from './routes/index'
 import { Route as UsersNewImport } from './routes/users.new'
 import { Route as UsersUserIdImport } from './routes/users.$userId'
+import { Route as DeleteUseridImport } from './routes/delete.$userid'
 
 // Create/Update Routes
-
-const RedirectRoute = RedirectImport.update({
-  id: '/redirect',
-  path: '/redirect',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const DeferredRoute = DeferredImport.update({
   id: '/deferred',
@@ -49,6 +43,12 @@ const UsersUserIdRoute = UsersUserIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const DeleteUseridRoute = DeleteUseridImport.update({
+  id: '/delete/$userid',
+  path: '/delete/$userid',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -67,11 +67,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeferredImport
       parentRoute: typeof rootRoute
     }
-    '/redirect': {
-      id: '/redirect'
-      path: '/redirect'
-      fullPath: '/redirect'
-      preLoaderRoute: typeof RedirectImport
+    '/delete/$userid': {
+      id: '/delete/$userid'
+      path: '/delete/$userid'
+      fullPath: '/delete/$userid'
+      preLoaderRoute: typeof DeleteUseridImport
       parentRoute: typeof rootRoute
     }
     '/users/$userId': {
@@ -96,7 +96,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/deferred': typeof DeferredRoute
-  '/redirect': typeof RedirectRoute
+  '/delete/$userid': typeof DeleteUseridRoute
   '/users/$userId': typeof UsersUserIdRoute
   '/users/new': typeof UsersNewRoute
 }
@@ -104,7 +104,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/deferred': typeof DeferredRoute
-  '/redirect': typeof RedirectRoute
+  '/delete/$userid': typeof DeleteUseridRoute
   '/users/$userId': typeof UsersUserIdRoute
   '/users/new': typeof UsersNewRoute
 }
@@ -113,21 +113,26 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/deferred': typeof DeferredRoute
-  '/redirect': typeof RedirectRoute
+  '/delete/$userid': typeof DeleteUseridRoute
   '/users/$userId': typeof UsersUserIdRoute
   '/users/new': typeof UsersNewRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/deferred' | '/redirect' | '/users/$userId' | '/users/new'
+  fullPaths:
+    | '/'
+    | '/deferred'
+    | '/delete/$userid'
+    | '/users/$userId'
+    | '/users/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/deferred' | '/redirect' | '/users/$userId' | '/users/new'
+  to: '/' | '/deferred' | '/delete/$userid' | '/users/$userId' | '/users/new'
   id:
     | '__root__'
     | '/'
     | '/deferred'
-    | '/redirect'
+    | '/delete/$userid'
     | '/users/$userId'
     | '/users/new'
   fileRoutesById: FileRoutesById
@@ -136,7 +141,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DeferredRoute: typeof DeferredRoute
-  RedirectRoute: typeof RedirectRoute
+  DeleteUseridRoute: typeof DeleteUseridRoute
   UsersUserIdRoute: typeof UsersUserIdRoute
   UsersNewRoute: typeof UsersNewRoute
 }
@@ -144,7 +149,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DeferredRoute: DeferredRoute,
-  RedirectRoute: RedirectRoute,
+  DeleteUseridRoute: DeleteUseridRoute,
   UsersUserIdRoute: UsersUserIdRoute,
   UsersNewRoute: UsersNewRoute,
 }
@@ -161,7 +166,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/deferred",
-        "/redirect",
+        "/delete/$userid",
         "/users/$userId",
         "/users/new"
       ]
@@ -172,8 +177,8 @@ export const routeTree = rootRoute
     "/deferred": {
       "filePath": "deferred.tsx"
     },
-    "/redirect": {
-      "filePath": "redirect.tsx"
+    "/delete/$userid": {
+      "filePath": "delete.$userid.tsx"
     },
     "/users/$userId": {
       "filePath": "users.$userId.tsx"
