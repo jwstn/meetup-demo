@@ -15,7 +15,6 @@ import { Route as DeferredImport } from './routes/deferred'
 import { Route as IndexImport } from './routes/index'
 import { Route as UsersNewImport } from './routes/users.new'
 import { Route as UsersUserIdImport } from './routes/users.$userId'
-import { Route as DeleteUseridImport } from './routes/delete.$userid'
 
 // Create/Update Routes
 
@@ -43,12 +42,6 @@ const UsersUserIdRoute = UsersUserIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const DeleteUseridRoute = DeleteUseridImport.update({
-  id: '/delete/$userid',
-  path: '/delete/$userid',
-  getParentRoute: () => rootRoute,
-} as any)
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -65,13 +58,6 @@ declare module '@tanstack/react-router' {
       path: '/deferred'
       fullPath: '/deferred'
       preLoaderRoute: typeof DeferredImport
-      parentRoute: typeof rootRoute
-    }
-    '/delete/$userid': {
-      id: '/delete/$userid'
-      path: '/delete/$userid'
-      fullPath: '/delete/$userid'
-      preLoaderRoute: typeof DeleteUseridImport
       parentRoute: typeof rootRoute
     }
     '/users/$userId': {
@@ -96,7 +82,6 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/deferred': typeof DeferredRoute
-  '/delete/$userid': typeof DeleteUseridRoute
   '/users/$userId': typeof UsersUserIdRoute
   '/users/new': typeof UsersNewRoute
 }
@@ -104,7 +89,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/deferred': typeof DeferredRoute
-  '/delete/$userid': typeof DeleteUseridRoute
   '/users/$userId': typeof UsersUserIdRoute
   '/users/new': typeof UsersNewRoute
 }
@@ -113,35 +97,22 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/deferred': typeof DeferredRoute
-  '/delete/$userid': typeof DeleteUseridRoute
   '/users/$userId': typeof UsersUserIdRoute
   '/users/new': typeof UsersNewRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/deferred'
-    | '/delete/$userid'
-    | '/users/$userId'
-    | '/users/new'
+  fullPaths: '/' | '/deferred' | '/users/$userId' | '/users/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/deferred' | '/delete/$userid' | '/users/$userId' | '/users/new'
-  id:
-    | '__root__'
-    | '/'
-    | '/deferred'
-    | '/delete/$userid'
-    | '/users/$userId'
-    | '/users/new'
+  to: '/' | '/deferred' | '/users/$userId' | '/users/new'
+  id: '__root__' | '/' | '/deferred' | '/users/$userId' | '/users/new'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DeferredRoute: typeof DeferredRoute
-  DeleteUseridRoute: typeof DeleteUseridRoute
   UsersUserIdRoute: typeof UsersUserIdRoute
   UsersNewRoute: typeof UsersNewRoute
 }
@@ -149,7 +120,6 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DeferredRoute: DeferredRoute,
-  DeleteUseridRoute: DeleteUseridRoute,
   UsersUserIdRoute: UsersUserIdRoute,
   UsersNewRoute: UsersNewRoute,
 }
@@ -166,7 +136,6 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/deferred",
-        "/delete/$userid",
         "/users/$userId",
         "/users/new"
       ]
@@ -176,9 +145,6 @@ export const routeTree = rootRoute
     },
     "/deferred": {
       "filePath": "deferred.tsx"
-    },
-    "/delete/$userid": {
-      "filePath": "delete.$userid.tsx"
     },
     "/users/$userId": {
       "filePath": "users.$userId.tsx"

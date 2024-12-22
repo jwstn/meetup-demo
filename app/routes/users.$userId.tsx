@@ -37,8 +37,6 @@ function UserComponent() {
       </div>
 
       <Link
-        to="/delete/$userid"
-        params={{ userid: String(user.id) }}
         className={buttonVariants({ variant: "destructive", size: "icon" })}
       >
         <Trash2Icon />
