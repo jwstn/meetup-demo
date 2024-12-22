@@ -2,6 +2,7 @@ import { FormProvider, useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import type { FormEvent } from "react";
+import * as zod from "zod";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 
@@ -11,8 +12,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-import { client } from "@/api-client";
-import { createUserFormSchema } from "@/routes/api/users.new";
+import { createUser } from "@/utils/users";
+
+export const createUserFormSchema = zod.object({
+  name: zod.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+  email: zod
+    .string()
+    .min(2, {
+      message: "email must be at least 2 characters.",
+    })
+    .email(),
+  description: zod.string().optional(),
+});
 
 export const Route = createFileRoute("/users/new")({
   component: RouteComponent,
@@ -24,15 +37,15 @@ function RouteComponent() {
       return parseWithZod(formData, { schema: createUserFormSchema });
     },
     defaultValue: {
-      name: "foo bar",
-      email: "foo.bar@fondof.de",
-      description: "daskhdash dajshd jkashd jkashdjkhas jkdahsdjkhas",
+      name: "",
+      email: "",
+      description: "",
     },
     onSubmit: async (event: FormEvent) => {
       event.preventDefault();
-      await client.post("users/new", {
-        json: event,
-      });
+      event.stopPropagation();
+
+      await createUser({ data: new FormData(event.target as HTMLFormElement) });
     },
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",
