@@ -47,7 +47,7 @@ function RouteComponent() {
       event.stopPropagation();
 
       await createUser({ data: new FormData(event.target as HTMLFormElement) });
-      toast.success('User created Successfully!')
+      toast.success("User created Successfully!");
     },
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",

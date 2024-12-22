@@ -30,11 +30,11 @@ function UserComponent() {
   const user = userQuery.data;
 
   async function handleSubmit(event: FormEvent) {
-    event.preventDefault()
-    event.stopPropagation()
+    event.preventDefault();
+    event.stopPropagation();
 
-    await deleteUser({ data: { id: String(user.id) } })
-    toast.success('User deleted successfully!')
+    await deleteUser({ data: { id: String(user.id) } });
+    toast.success("User deleted successfully!");
   }
 
   return (
@@ -46,7 +46,7 @@ function UserComponent() {
       </div>
 
       <form method="POST" onSubmit={handleSubmit}>
-        <Button type='submit' variant='destructive' size='icon'>
+        <Button type="submit" variant="destructive" size="icon">
           <Trash2Icon />
         </Button>
       </form>
