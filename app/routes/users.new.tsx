@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 import { createUser } from "@/utils/users";
+import { toast } from "sonner";
 
 export const createUserFormSchema = zod.object({
   name: zod.string().min(2, {
@@ -46,6 +47,7 @@ function RouteComponent() {
       event.stopPropagation();
 
       await createUser({ data: new FormData(event.target as HTMLFormElement) });
+      toast.success('User created Successfully!')
     },
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",

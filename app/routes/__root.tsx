@@ -2,7 +2,8 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { DefaultCatchBoundary } from "@/components/DefaultCatchBoundary";
 import { NotFound } from "@/components/NotFound";
 
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "@/styles/app.css?url";
 import { seo } from "@/utils/seo";
@@ -92,6 +93,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <SidebarProvider>
           <AppSidebar />
           <main className="p-4 w-full">{children}</main>
+          <Toaster richColors />
         </SidebarProvider>
 
         <ScrollRestoration />
