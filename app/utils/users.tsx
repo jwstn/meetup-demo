@@ -38,7 +38,7 @@ export const createUser = createServerFn({ method: "POST" }).handler(
 export const deleteUser = createServerFn({ method: "POST" }).handler(
   // @ts-ignore
   async ({ data: { id } }) => {
-    await db.delete(usersTable).where(eq(usersTable.id, parseInt(id)));
+    await db.delete(usersTable).where(eq(usersTable.id, Number.parseInt(id)));
     return json({ message: "User deleted successfully" }, { status: 200 });
   },
 );

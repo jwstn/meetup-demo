@@ -11,7 +11,7 @@ export const APIRoute = createAPIFileRoute("/api/users/$id")({
       const user = await db
         .select()
         .from(usersTable)
-        .where(eq(usersTable.id, parseInt(params.id)));
+        .where(eq(usersTable.id, Number.parseInt(params.id)));
 
       return json(user[0]);
     } catch (error) {
