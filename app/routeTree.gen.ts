@@ -10,111 +10,111 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as DeferredImport } from './routes/deferred'
-import { Route as IndexImport } from './routes/index'
-import { Route as UsersNewImport } from './routes/users.new'
-import { Route as UsersUserIdImport } from './routes/users.$userId'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as DeferredImport } from "./routes/deferred";
+import { Route as IndexImport } from "./routes/index";
+import { Route as UsersNewImport } from "./routes/users.new";
+import { Route as UsersUserIdImport } from "./routes/users.$userId";
 
 // Create/Update Routes
 
 const DeferredRoute = DeferredImport.update({
-  id: '/deferred',
-  path: '/deferred',
+  id: "/deferred",
+  path: "/deferred",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const UsersNewRoute = UsersNewImport.update({
-  id: '/users/new',
-  path: '/users/new',
+  id: "/users/new",
+  path: "/users/new",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const UsersUserIdRoute = UsersUserIdImport.update({
-  id: '/users/$userId',
-  path: '/users/$userId',
+  id: "/users/$userId",
+  path: "/users/$userId",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/deferred': {
-      id: '/deferred'
-      path: '/deferred'
-      fullPath: '/deferred'
-      preLoaderRoute: typeof DeferredImport
-      parentRoute: typeof rootRoute
-    }
-    '/users/$userId': {
-      id: '/users/$userId'
-      path: '/users/$userId'
-      fullPath: '/users/$userId'
-      preLoaderRoute: typeof UsersUserIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/users/new': {
-      id: '/users/new'
-      path: '/users/new'
-      fullPath: '/users/new'
-      preLoaderRoute: typeof UsersNewImport
-      parentRoute: typeof rootRoute
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/deferred": {
+      id: "/deferred";
+      path: "/deferred";
+      fullPath: "/deferred";
+      preLoaderRoute: typeof DeferredImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/users/$userId": {
+      id: "/users/$userId";
+      path: "/users/$userId";
+      fullPath: "/users/$userId";
+      preLoaderRoute: typeof UsersUserIdImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/users/new": {
+      id: "/users/new";
+      path: "/users/new";
+      fullPath: "/users/new";
+      preLoaderRoute: typeof UsersNewImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/deferred': typeof DeferredRoute
-  '/users/$userId': typeof UsersUserIdRoute
-  '/users/new': typeof UsersNewRoute
+  "/": typeof IndexRoute;
+  "/deferred": typeof DeferredRoute;
+  "/users/$userId": typeof UsersUserIdRoute;
+  "/users/new": typeof UsersNewRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/deferred': typeof DeferredRoute
-  '/users/$userId': typeof UsersUserIdRoute
-  '/users/new': typeof UsersNewRoute
+  "/": typeof IndexRoute;
+  "/deferred": typeof DeferredRoute;
+  "/users/$userId": typeof UsersUserIdRoute;
+  "/users/new": typeof UsersNewRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/deferred': typeof DeferredRoute
-  '/users/$userId': typeof UsersUserIdRoute
-  '/users/new': typeof UsersNewRoute
+  __root__: typeof rootRoute;
+  "/": typeof IndexRoute;
+  "/deferred": typeof DeferredRoute;
+  "/users/$userId": typeof UsersUserIdRoute;
+  "/users/new": typeof UsersNewRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/deferred' | '/users/$userId' | '/users/new'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/deferred' | '/users/$userId' | '/users/new'
-  id: '__root__' | '/' | '/deferred' | '/users/$userId' | '/users/new'
-  fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: "/" | "/deferred" | "/users/$userId" | "/users/new";
+  fileRoutesByTo: FileRoutesByTo;
+  to: "/" | "/deferred" | "/users/$userId" | "/users/new";
+  id: "__root__" | "/" | "/deferred" | "/users/$userId" | "/users/new";
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DeferredRoute: typeof DeferredRoute
-  UsersUserIdRoute: typeof UsersUserIdRoute
-  UsersNewRoute: typeof UsersNewRoute
+  IndexRoute: typeof IndexRoute;
+  DeferredRoute: typeof DeferredRoute;
+  UsersUserIdRoute: typeof UsersUserIdRoute;
+  UsersNewRoute: typeof UsersNewRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -122,11 +122,11 @@ const rootRouteChildren: RootRouteChildren = {
   DeferredRoute: DeferredRoute,
   UsersUserIdRoute: UsersUserIdRoute,
   UsersNewRoute: UsersNewRoute,
-}
+};
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {

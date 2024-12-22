@@ -5,8 +5,8 @@ import { createUserFormSchema } from "@/routes/users.new";
 import type { User } from "@/types";
 import { parseWithZod } from "@conform-to/zod";
 import { queryOptions } from "@tanstack/react-query";
-import { redirect } from "@tanstack/react-router";
 import { createServerFn, json } from "@tanstack/start";
+import { eq } from "drizzle-orm";
 
 export const usersQueryOptions = () =>
   queryOptions({
@@ -31,9 +31,14 @@ export const createUser = createServerFn({ method: "POST" }).handler(
     }
 
     await db.insert(usersTable).values({ ...submission.value });
-    // return json({ message: "User created successfully" }, { status: 201 });
-    throw redirect({
-      to: "/",
-    });
+    return json({ message: "User created successfully" }, { status: 200 });
   },
 );
+
+
+export const deleteUser = createServerFn({ method: 'POST' }).handler(
+  // @ts-ignore
+  async ({ data: { id } }) => {
+    await db.delete(usersTable).where(eq(usersTable.id, parseInt(id)))
+    return json({ message: "User deleted successfully" }, { status: 200 });
+  })
