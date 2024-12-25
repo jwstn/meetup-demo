@@ -44,8 +44,15 @@ export function AppSidebar() {
         </form>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarGroupLabel className="text-base">
+            <SidebarGroupLabel className="text-base flex justify-between">
               Contacts
+              <Link
+                className="text-sm text-muted-foreground"
+                to="/"
+                search={() => {}}
+              >
+                Reset
+              </Link>
             </SidebarGroupLabel>
             <SidebarMenu>
               {[...usersQuery.data].map((item) => (
