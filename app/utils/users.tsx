@@ -8,17 +8,27 @@ import { queryOptions } from "@tanstack/react-query";
 import { createServerFn, json } from "@tanstack/start";
 import { eq } from "drizzle-orm";
 
-export const usersQueryOptions = () =>
-  queryOptions({
-    queryKey: ["users"],
-    queryFn: () => client.get<Array<User>>("users").json(),
+export const usersQueryOptions = (query: string) => {
+  return queryOptions({
+    queryKey: ["users", "search", query],
+    queryFn: () => client.get<Array<User>>(`users/search/${query}`).json(),
   });
+};
 
 export const userQueryOptions = (id: string) =>
   queryOptions({
     queryKey: ["users", id],
     queryFn: () => client.get<User>(`users/${id}`).json(),
   });
+
+// export const searchUser = createServerFn({ method: "GET" }).handler(
+//   async ({ data }) => {
+//     return await db
+//       .select()
+//       .from(usersTable)
+//       .where(like(usersTable.name, `%${data.query}%`));
+//   },
+// );
 
 export const createUser = createServerFn({ method: "POST" }).handler(
   // @ts-ignore

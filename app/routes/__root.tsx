@@ -69,8 +69,21 @@ export const Route = createRootRouteWithContext<{
     );
   },
   notFoundComponent: () => <NotFound />,
-  loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(usersQueryOptions());
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { q: string } | undefined => {
+    if (!search.q) {
+      return undefined;
+    }
+
+    return { q: String(search.q) };
+  },
+  loaderDeps: ({ search }) => {
+    return { q: search.q };
+  },
+  loader: async ({ context, deps }) => {
+    const query = deps.q;
+    await context.queryClient.ensureQueryData(usersQueryOptions(query));
   },
   component: RootComponent,
 });
