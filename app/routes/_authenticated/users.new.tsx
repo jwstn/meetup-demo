@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import type { FormEvent } from "react";
+
 import * as zod from "zod";
 
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -29,7 +29,7 @@ export const createUserFormSchema = zod.object({
   description: zod.string().optional(),
 });
 
-export const Route = createFileRoute("/users/new")({
+export const Route = createFileRoute("/_authenticated/users/new")({
   validateSearch: (
     search: Record<string, unknown>,
   ): { q: string } | undefined => {

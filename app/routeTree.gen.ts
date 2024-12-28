@@ -10,123 +10,209 @@
 
 // Import Routes
 
-import { Route as rootRoute } from "./routes/__root";
-import { Route as DeferredImport } from "./routes/deferred";
-import { Route as IndexImport } from "./routes/index";
-import { Route as UsersNewImport } from "./routes/users.new";
-import { Route as UsersUserIdImport } from "./routes/users.$userId";
+import { Route as rootRoute } from './routes/__root'
+import { Route as SignUpImport } from './routes/sign-up'
+import { Route as LoginImport } from './routes/login'
+import { Route as DeferredImport } from './routes/deferred'
+import { Route as AuthenticatedImport } from './routes/_authenticated'
+import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedUsersNewImport } from './routes/_authenticated/users.new'
+import { Route as AuthenticatedUsersUserIdImport } from './routes/_authenticated/users.$userId'
 
 // Create/Update Routes
 
+const SignUpRoute = SignUpImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LoginRoute = LoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const DeferredRoute = DeferredImport.update({
-  id: "/deferred",
-  path: "/deferred",
+  id: '/deferred',
+  path: '/deferred',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
-const IndexRoute = IndexImport.update({
-  id: "/",
-  path: "/",
+const AuthenticatedRoute = AuthenticatedImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
-const UsersNewRoute = UsersNewImport.update({
-  id: "/users/new",
-  path: "/users/new",
-  getParentRoute: () => rootRoute,
-} as any);
+const AuthenticatedIndexRoute = AuthenticatedIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
-const UsersUserIdRoute = UsersUserIdImport.update({
-  id: "/users/$userId",
-  path: "/users/$userId",
-  getParentRoute: () => rootRoute,
-} as any);
+const AuthenticatedUsersNewRoute = AuthenticatedUsersNewImport.update({
+  id: '/users/new',
+  path: '/users/new',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const AuthenticatedUsersUserIdRoute = AuthenticatedUsersUserIdImport.update({
+  id: '/users/$userId',
+  path: '/users/$userId',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/deferred": {
-      id: "/deferred";
-      path: "/deferred";
-      fullPath: "/deferred";
-      preLoaderRoute: typeof DeferredImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/users/$userId": {
-      id: "/users/$userId";
-      path: "/users/$userId";
-      fullPath: "/users/$userId";
-      preLoaderRoute: typeof UsersUserIdImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/users/new": {
-      id: "/users/new";
-      path: "/users/new";
-      fullPath: "/users/new";
-      preLoaderRoute: typeof UsersNewImport;
-      parentRoute: typeof rootRoute;
-    };
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedImport
+      parentRoute: typeof rootRoute
+    }
+    '/deferred': {
+      id: '/deferred'
+      path: '/deferred'
+      fullPath: '/deferred'
+      preLoaderRoute: typeof DeferredImport
+      parentRoute: typeof rootRoute
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/sign-up': {
+      id: '/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof SignUpImport
+      parentRoute: typeof rootRoute
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/users/$userId': {
+      id: '/_authenticated/users/$userId'
+      path: '/users/$userId'
+      fullPath: '/users/$userId'
+      preLoaderRoute: typeof AuthenticatedUsersUserIdImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/users/new': {
+      id: '/_authenticated/users/new'
+      path: '/users/new'
+      fullPath: '/users/new'
+      preLoaderRoute: typeof AuthenticatedUsersNewImport
+      parentRoute: typeof AuthenticatedImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedUsersUserIdRoute: typeof AuthenticatedUsersUserIdRoute
+  AuthenticatedUsersNewRoute: typeof AuthenticatedUsersNewRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedUsersUserIdRoute: AuthenticatedUsersUserIdRoute,
+  AuthenticatedUsersNewRoute: AuthenticatedUsersNewRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/deferred": typeof DeferredRoute;
-  "/users/$userId": typeof UsersUserIdRoute;
-  "/users/new": typeof UsersNewRoute;
+  '': typeof AuthenticatedRouteWithChildren
+  '/deferred': typeof DeferredRoute
+  '/login': typeof LoginRoute
+  '/sign-up': typeof SignUpRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/users/$userId': typeof AuthenticatedUsersUserIdRoute
+  '/users/new': typeof AuthenticatedUsersNewRoute
 }
 
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/deferred": typeof DeferredRoute;
-  "/users/$userId": typeof UsersUserIdRoute;
-  "/users/new": typeof UsersNewRoute;
+  '/deferred': typeof DeferredRoute
+  '/login': typeof LoginRoute
+  '/sign-up': typeof SignUpRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/users/$userId': typeof AuthenticatedUsersUserIdRoute
+  '/users/new': typeof AuthenticatedUsersNewRoute
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute;
-  "/": typeof IndexRoute;
-  "/deferred": typeof DeferredRoute;
-  "/users/$userId": typeof UsersUserIdRoute;
-  "/users/new": typeof UsersNewRoute;
+  __root__: typeof rootRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/deferred': typeof DeferredRoute
+  '/login': typeof LoginRoute
+  '/sign-up': typeof SignUpRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/users/$userId': typeof AuthenticatedUsersUserIdRoute
+  '/_authenticated/users/new': typeof AuthenticatedUsersNewRoute
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/deferred" | "/users/$userId" | "/users/new";
-  fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/deferred" | "/users/$userId" | "/users/new";
-  id: "__root__" | "/" | "/deferred" | "/users/$userId" | "/users/new";
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | ''
+    | '/deferred'
+    | '/login'
+    | '/sign-up'
+    | '/'
+    | '/users/$userId'
+    | '/users/new'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/deferred'
+    | '/login'
+    | '/sign-up'
+    | '/'
+    | '/users/$userId'
+    | '/users/new'
+  id:
+    | '__root__'
+    | '/_authenticated'
+    | '/deferred'
+    | '/login'
+    | '/sign-up'
+    | '/_authenticated/'
+    | '/_authenticated/users/$userId'
+    | '/_authenticated/users/new'
+  fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  DeferredRoute: typeof DeferredRoute;
-  UsersUserIdRoute: typeof UsersUserIdRoute;
-  UsersNewRoute: typeof UsersNewRoute;
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  DeferredRoute: typeof DeferredRoute
+  LoginRoute: typeof LoginRoute
+  SignUpRoute: typeof SignUpRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   DeferredRoute: DeferredRoute,
-  UsersUserIdRoute: UsersUserIdRoute,
-  UsersNewRoute: UsersNewRoute,
-};
+  LoginRoute: LoginRoute,
+  SignUpRoute: SignUpRoute,
+}
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
 /* ROUTE_MANIFEST_START
 {
@@ -134,23 +220,40 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
+        "/_authenticated",
         "/deferred",
-        "/users/$userId",
-        "/users/new"
+        "/login",
+        "/sign-up"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/_authenticated": {
+      "filePath": "_authenticated.tsx",
+      "children": [
+        "/_authenticated/",
+        "/_authenticated/users/$userId",
+        "/_authenticated/users/new"
+      ]
     },
     "/deferred": {
       "filePath": "deferred.tsx"
     },
-    "/users/$userId": {
-      "filePath": "users.$userId.tsx"
+    "/login": {
+      "filePath": "login.tsx"
     },
-    "/users/new": {
-      "filePath": "users.new.tsx"
+    "/sign-up": {
+      "filePath": "sign-up.tsx"
+    },
+    "/_authenticated/": {
+      "filePath": "_authenticated/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/users/$userId": {
+      "filePath": "_authenticated/users.$userId.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/users/new": {
+      "filePath": "_authenticated/users.new.tsx",
+      "parent": "/_authenticated"
     }
   }
 }

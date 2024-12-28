@@ -1,6 +1,6 @@
 import { client } from "@/api-client";
-import { db } from "@/db";
-import { usersTable } from "@/db/schema";
+import { db } from "@/db/index";
+import { usersTable } from "@/db/schema/schema";
 import { createUserFormSchema } from "@/routes/users.new";
 import type { User } from "@/types";
 import { parseWithZod } from "@conform-to/zod";
