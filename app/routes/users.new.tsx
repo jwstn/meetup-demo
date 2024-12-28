@@ -69,7 +69,6 @@ function RouteComponent() {
         data: formData,
       });
 
-      console.log(JSON.stringify(user, null, 2), "[user]");
       queryClient.invalidateQueries({
         queryKey: ["users", "search", search?.q],
       });
