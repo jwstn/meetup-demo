@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 import { createUser } from "@/utils/users";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export const createUserFormSchema = zod.object({
@@ -29,10 +30,26 @@ export const createUserFormSchema = zod.object({
 });
 
 export const Route = createFileRoute("/users/new")({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { q: string } | undefined => {
+    if (!search.q) {
+      return undefined;
+    }
+
+    return { q: String(search.q) };
+  },
+  loaderDeps: ({ search }) => {
+    return { q: search.q };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const navigate = Route.useNavigate();
+  const search = Route.useSearch();
+  const queryClient = useQueryClient();
+
   const [form, fields] = useForm({
     onValidate: ({ formData }) => {
       return parseWithZod(formData, { schema: createUserFormSchema });
@@ -42,12 +59,22 @@ function RouteComponent() {
       email: "",
       description: "",
     },
-    onSubmit: async (event: FormEvent) => {
+    onSubmit: async (event) => {
       event.preventDefault();
       event.stopPropagation();
 
-      await createUser({ data: new FormData(event.target as HTMLFormElement) });
+      const formData = new FormData(event.currentTarget);
+
+      const user = await createUser({
+        data: formData,
+      });
+
+      console.log(JSON.stringify(user, null, 2), "[user]");
+      queryClient.invalidateQueries({
+        queryKey: ["users", "search", search?.q],
+      });
       toast.success("User created Successfully!");
+      navigate({ to: "/" });
     },
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",

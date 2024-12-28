@@ -21,15 +21,6 @@ export const userQueryOptions = (id: string) =>
     queryFn: () => client.get<User>(`users/${id}`).json(),
   });
 
-// export const searchUser = createServerFn({ method: "GET" }).handler(
-//   async ({ data }) => {
-//     return await db
-//       .select()
-//       .from(usersTable)
-//       .where(like(usersTable.name, `%${data.query}%`));
-//   },
-// );
-
 export const createUser = createServerFn({ method: "POST" }).handler(
   // @ts-ignore
   async ({ data: formData }) => {
@@ -40,8 +31,12 @@ export const createUser = createServerFn({ method: "POST" }).handler(
       return json(submission.reply());
     }
 
-    await db.insert(usersTable).values({ ...submission.value });
-    return json({ message: "User created successfully" }, { status: 200 });
+    const user = await db
+      .insert(usersTable)
+      .values({ ...submission.value })
+      .returning();
+
+    return json({ ...user[0] }, { status: 200 });
   },
 );
 

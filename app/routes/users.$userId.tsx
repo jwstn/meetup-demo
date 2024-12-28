@@ -2,7 +2,7 @@ import { NotFound } from "@/components/NotFound";
 import { TypographyH1, TypographyP } from "@/components/typography";
 import { Button } from "@/components/ui/button";
 import { deleteUser, userQueryOptions } from "@/utils/users";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { ErrorComponent, createFileRoute } from "@tanstack/react-router";
 import { Trash2Icon } from "lucide-react";
@@ -10,6 +10,18 @@ import type { FormEvent } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/users/$userId")({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { q: string } | undefined => {
+    if (!search.q) {
+      return undefined;
+    }
+
+    return { q: String(search.q) };
+  },
+  loaderDeps: ({ search }) => {
+    return { q: search.q };
+  },
   loader: async ({ context, params: { userId } }) => {
     await context.queryClient.ensureQueryData(userQueryOptions(userId));
   },
@@ -26,8 +38,10 @@ export function UserErrorComponent({ error }: ErrorComponentProps) {
 
 function UserComponent() {
   const params = Route.useParams();
-  const userQuery = useSuspenseQuery(userQueryOptions(params.userId));
-  const user = userQuery.data;
+  const navigate = Route.useNavigate();
+  const search = Route.useSearch();
+  const { data: user } = useSuspenseQuery(userQueryOptions(params.userId));
+  const queryClient = useQueryClient();
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -35,6 +49,8 @@ function UserComponent() {
 
     await deleteUser({ data: { id: String(user.id) } });
     toast.success("User deleted successfully!");
+    queryClient.invalidateQueries({ queryKey: ["users", "search", search?.q] });
+    navigate({ to: "/" });
   }
 
   return (

@@ -30,6 +30,7 @@ export function AppSidebar() {
           <Input
             name="q"
             type="search"
+            defaultValue={q || ""}
             placeholder="Search users"
             className="w-full"
             aria-label="Search users"
