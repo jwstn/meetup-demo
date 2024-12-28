@@ -2,68 +2,158 @@ import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import * as zod from "zod";
 
+import { signIn } from "@/lib/auth-client";
+import { FormProvider, useForm } from "@conform-to/react";
+import { parseWithZod } from "@conform-to/zod";
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { createServerFn, json } from "@tanstack/start";
 import { GalleryVerticalEnd } from "lucide-react";
+import { toast } from "sonner";
+
+export const loginFormSchema = zod.object({
+  email: zod
+    .string()
+    .min(2, {
+      message: "email must be at least 2 characters.",
+    })
+    .email(),
+  password: zod.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
+});
+1;
+export const loginUser = createServerFn({ method: "POST" }).handler(
+  // @ts-ignore
+  async ({ data: formData }) => {
+    // @ts-ignore
+    const submission = parseWithZod(formData, { schema: loginFormSchema });
+
+    if (submission.status !== "success") {
+      console.log("submission not successfull!");
+      return json(submission.reply());
+    }
+
+    const { data, error } = await signIn.email({
+      email: submission.value.email,
+      password: submission.value.password,
+    });
+
+    console.log({ data, error }, "[loginData]");
+
+    if (error !== null && data === null) {
+      return { error, data: null };
+    }
+
+    return { data, error: null };
+  },
+);
 
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const navigate = Route.useNavigate();
+
+  const [form, fields] = useForm({
+    onValidate: ({ formData }) => {
+      return parseWithZod(formData, { schema: loginFormSchema });
+    },
+    defaultValue: {
+      email: "",
+      password: "",
+    },
+    onSubmit: async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const formData = new FormData(event.target);
+
+      const { data, error } = await loginUser({
+        data: formData,
+      });
+
+      if (error !== null && error.message) {
+        return toast.error(error.message);
+      }
+
+      navigate({ to: "/" });
+
+      toast.success("Login successfull 🚀", {
+        description: `You are now logged in as ${data.user.name}`,
+      });
+    },
+  });
+
   return (
     <main className="flex min-h-dvh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
-          <form>
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col items-center gap-2">
-                <a
-                  href="https://www.fondof.de"
-                  className="flex flex-col items-center gap-2 font-medium"
-                >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-md">
-                    <GalleryVerticalEnd className="size-6" />
-                  </div>
-                  <span className="sr-only">Acme Inc.</span>
-                </a>
-                <h1 className="text-xl font-bold">Welcome to Acme Inc.</h1>
-                <div className="text-center text-sm">
-                  Don&apos;t have an account?{" "}
-                  <Link to="/sign-up" className="underline underline-offset-4">
-                    Sign up
-                  </Link>
-                </div>
-              </div>
+          <FormProvider context={form.context}>
+            <form id={form.id} method="POST" onSubmit={form.onSubmit}>
               <div className="flex flex-col gap-6">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="m@example.com"
-                    required
-                  />
+                <div className="flex flex-col items-center gap-2">
+                  <a
+                    href="https://www.fondof.de"
+                    className="flex flex-col items-center gap-2 font-medium"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-md">
+                      <GalleryVerticalEnd className="size-6" />
+                    </div>
+                    <span className="sr-only">Acme Inc.</span>
+                  </a>
+                  <h1 className="text-xl font-bold">Welcome to Acme Inc.</h1>
+                  <div className="text-center text-sm">
+                    Don&apos;t have an account?{" "}
+                    <Link
+                      to="/sign-up"
+                      className="underline underline-offset-4"
+                    >
+                      Sign up
+                    </Link>
+                  </div>
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="*********"
-                    required
-                  />
+                <div className="flex flex-col gap-6">
+                  <div className="grid gap-2">
+                    <Label htmlFor={fields.email.name}>Email</Label>
+                    <Input
+                      key={fields.email.key}
+                      id={fields.email.id}
+                      name={fields.email.name}
+                      type="email"
+                      placeholder="m@example.com"
+                      required
+                    />
+                    <span className="text-sm text-red-500">
+                      {fields.email?.errors}
+                    </span>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor={fields.password.name}>Password</Label>
+                    <Input
+                      key={fields.password.key}
+                      id={fields.password.id}
+                      name={fields.password.name}
+                      type="password"
+                      placeholder="*********"
+                      required
+                    />
+                    <span className="text-sm text-red-500">
+                      {fields.password?.errors}
+                    </span>
+                  </div>
+                  <Button type="submit" className="w-full">
+                    Login
+                  </Button>
                 </div>
-                <Button type="submit" className="w-full">
-                  Login
-                </Button>
-              </div>
-              {/* <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                {/* <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
                   Or
                 </span>
               </div> */}
-              {/* <div className="grid gap-4 sm:grid-cols-2">
+                {/* <div className="grid gap-4 sm:grid-cols-2">
                 <Button variant="outline" className="w-full">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
@@ -83,8 +173,9 @@ function RouteComponent() {
                   Continue with Google
                 </Button>
               </div> */}
-            </div>
-          </form>
+              </div>
+            </form>
+          </FormProvider>
           {/* <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary  ">
             By clicking continue, you agree to our{" "}
             <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.

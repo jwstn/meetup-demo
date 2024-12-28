@@ -11,10 +11,6 @@ import { createServerFn, json } from "@tanstack/start";
 import { GalleryVerticalEnd } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/sign-up")({
-  component: RouteComponent,
-});
-
 export const signUpFormSchema = zod.object({
   name: zod.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -28,6 +24,10 @@ export const signUpFormSchema = zod.object({
   password: zod.string().min(8, {
     message: "Password must be at least 8 characters.",
   }),
+});
+
+export const Route = createFileRoute("/sign-up")({
+  component: RouteComponent,
 });
 
 export const signUpUser = createServerFn({ method: "POST" }).handler(
@@ -46,13 +46,11 @@ export const signUpUser = createServerFn({ method: "POST" }).handler(
       name: submission.value.name,
     });
 
-    console.log(JSON.stringify(data, null, 2), "[signup data]");
-
     if (error) {
-      return json({ error }, { status: 401 });
+      return { error, data: null };
     }
 
-    return json({ ...data }, { status: 200 });
+    return { data, error: null };
   },
 );
 
@@ -74,11 +72,16 @@ function RouteComponent() {
 
       const formData = new FormData(event.target);
 
-      const user = await signUpUser({
+      const { data, error } = await signUpUser({
         data: formData,
       });
-      toast.success(`Welcome ${user.email}!`);
-      navigate({ to: "/" });
+
+      if (error !== null && error.message) {
+        return toast.error(error.message);
+      }
+
+      toast.success("Account successfully created 🚀");
+      navigate({ to: "/login" });
     },
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",
