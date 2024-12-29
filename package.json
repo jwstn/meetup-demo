@@ -9,7 +9,11 @@
     "start": "vinxi start",
     "format": "pnpm biome format --write",
     "lint": "pnpm biome lint --write",
-    "check": "pnpm biome check --write"
+    "check": "pnpm biome check --write",
+    "generate": "npx drizzle-kit generate",
+    "migrate": "npx drizzle-kit migrate",
+    "push": "npx drizzle-kit push",
+    "studio": "pnpm drizzle-kit studio"
   },
   "dependencies": {
     "@conform-to/react": "^1.2.2",
