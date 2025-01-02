@@ -1,23 +1,20 @@
+import { auth } from "@/auth";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { authClient } from "@/lib/auth-client";
-import { usersQueryOptions } from "@/utils/users";
+
+import { contactQueryOptions } from "@/utils/contacts";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/start";
 import { toast } from "sonner";
+import { getWebRequest } from "vinxi/http";
 
-const isAuthenticated = async () => {
-  const { data, error } = await authClient.getSession();
+const isAuthenticated = createServerFn({ method: "GET" }).handler(async () => {
+  const { headers } = getWebRequest();
+  const session = await auth.api.getSession({ headers });
 
-  console.log({ data, error }, "[session data]");
+  console.log({ session, user: session?.user }, "[session isAuthenticated serverFn]");
 
-  if (error) {
-    toast.warning("Authentication failed, please login in first.", {
-      description: error.message || "An error occurred",
-    });
-    return false;
-  }
-
-  if (!data?.user.id) {
+  if (!session?.user.id) {
     toast.warning("Session is missing", {
       description: "Something happend",
     });
@@ -25,11 +22,13 @@ const isAuthenticated = async () => {
   }
 
   return true;
-};
+});
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ location }) => {
     const isLoggedIn = await isAuthenticated();
+
+    console.log({ isLoggedIn }, "[isLoggedIn]");
     if (!isLoggedIn) {
       throw redirect({
         to: "/login",
@@ -39,9 +38,7 @@ export const Route = createFileRoute("/_authenticated")({
       });
     }
   },
-  validateSearch: (
-    search: Record<string, unknown>,
-  ): { q: string } | undefined => {
+  validateSearch: (search: Record<string, unknown>): { q: string } | undefined => {
     if (!search.q) {
       return undefined;
     }
@@ -53,7 +50,7 @@ export const Route = createFileRoute("/_authenticated")({
   },
   loader: async ({ context, deps }) => {
     const query = deps.q;
-    await context.queryClient.ensureQueryData(usersQueryOptions(query));
+    await context.queryClient.ensureQueryData(contactQueryOptions(query));
   },
   component: AuthenticatedRootComponent,
 });

@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import * as zod from "zod";
 
-import { authClient, signUp } from "@/lib/auth-client";
+import { signUp } from "@/lib/auth-client";
 import { FormProvider, useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { Link, createFileRoute } from "@tanstack/react-router";
@@ -76,7 +76,9 @@ function RouteComponent() {
         data: formData,
       });
 
-      if (error !== null && error.message) {
+      console.log({ data, error }, "[login data]");
+
+      if (error?.message) {
         return toast.error(error.message);
       }
 
@@ -123,9 +125,7 @@ function RouteComponent() {
                       placeholder="John Doe"
                       required
                     />
-                    <span className="text-sm text-red-500">
-                      {fields.name.errors}
-                    </span>
+                    <span className="text-sm text-red-500">{fields.name.errors}</span>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor={fields.email.name}>Email</Label>
@@ -137,9 +137,7 @@ function RouteComponent() {
                       placeholder="foo@bar.baz"
                       required
                     />
-                    <span className="text-sm text-red-500">
-                      {fields.email.errors}
-                    </span>
+                    <span className="text-sm text-red-500">{fields.email.errors}</span>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor={fields.password.name}>Password</Label>
@@ -151,9 +149,7 @@ function RouteComponent() {
                       placeholder="*********"
                       required
                     />
-                    <span className="text-sm text-red-500">
-                      {fields.password.errors}
-                    </span>
+                    <span className="text-sm text-red-500">{fields.password.errors}</span>
                   </div>
                   <Button type="submit" className="w-full">
                     Sign-Up

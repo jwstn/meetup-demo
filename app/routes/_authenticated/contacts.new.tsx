@@ -12,13 +12,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-import { createUser } from "@/utils/users";
+import { createContact } from "@/utils/contacts";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export const createUserFormSchema = zod.object({
+export const createContactFormSchema = zod.object({
   name: zod.string().min(2, {
-    message: "Username must be at least 2 characters.",
+    message: "contact must be at least 2 characters.",
   }),
   email: zod
     .string()
@@ -29,10 +29,8 @@ export const createUserFormSchema = zod.object({
   description: zod.string().optional(),
 });
 
-export const Route = createFileRoute("/_authenticated/users/new")({
-  validateSearch: (
-    search: Record<string, unknown>,
-  ): { q: string } | undefined => {
+export const Route = createFileRoute("/_authenticated/contacts/new")({
+  validateSearch: (search: Record<string, unknown>): { q: string } | undefined => {
     if (!search.q) {
       return undefined;
     }
@@ -52,7 +50,7 @@ function RouteComponent() {
 
   const [form, fields] = useForm({
     onValidate: ({ formData }) => {
-      return parseWithZod(formData, { schema: createUserFormSchema });
+      return parseWithZod(formData, { schema: createContactFormSchema });
     },
     defaultValue: {
       name: "",
@@ -65,12 +63,12 @@ function RouteComponent() {
 
       const formData = new FormData(event.currentTarget);
 
-      const user = await createUser({
+      const contact = await createContact({
         data: formData,
       });
 
       queryClient.invalidateQueries({
-        queryKey: ["users", "search", search?.q],
+        queryKey: ["contacts", "search", search?.q],
       });
       toast.success("User created Successfully!");
       navigate({ to: "/" });
@@ -124,10 +122,7 @@ function RouteComponent() {
         </div>
         <div className="flex space-x-2">
           <Button type="submit">Submit</Button>
-          <Link
-            to="/"
-            className={cn(buttonVariants({ variant: "destructive" }))}
-          >
+          <Link to="/" className={cn(buttonVariants({ variant: "destructive" }))}>
             Cancel
           </Link>
         </div>

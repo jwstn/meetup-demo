@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import { usersQueryOptions } from "@/utils/users";
+import { contactQueryOptions } from "@/utils/contacts";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 
@@ -22,7 +22,7 @@ import { PlusCircleIcon } from "lucide-react";
 export function AppSidebar() {
   const { q } = Route.useSearch();
 
-  const usersQuery = useSuspenseQuery(usersQueryOptions(q));
+  const contacts = useSuspenseQuery(contactQueryOptions(q));
   return (
     <Sidebar>
       <SidebarContent>
@@ -36,7 +36,7 @@ export function AppSidebar() {
             aria-label="Search users"
           />
           <Link
-            to="/users/new"
+            to="/contacts/new"
             search={{ q }}
             className={cn(buttonVariants({ size: "icon" }), "min-w-10")}
           >
@@ -47,22 +47,18 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarGroupLabel className="text-base flex justify-between">
               Contacts
-              <Link
-                className="text-sm text-muted-foreground"
-                to="/"
-                search={() => {}}
-              >
+              <Link className="text-sm text-muted-foreground" to="/" search={() => {}}>
                 Reset
               </Link>
             </SidebarGroupLabel>
             <SidebarMenu>
-              {[...usersQuery.data].map((item) => (
+              {[...contacts.data].map((item) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton asChild>
                     <Link
-                      to="/users/$userId"
+                      to="/contacts/$contactsId"
                       search={{ q }}
-                      params={{ userId: String(item.id) }}
+                      params={{ contactsId: String(item.id) }}
                       className={cn(
                         buttonVariants({ variant: "link" }),
                         "text-lg justify-start",
