@@ -15,6 +15,20 @@
       "when": 1734799445520,
       "tag": "0001_stale_ulik",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1735403131951,
+      "tag": "0002_rainy_killmonger",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1735407881065,
+      "tag": "0003_glossy_blue_blade",
+      "breakpoints": true
     }
   ]
 }

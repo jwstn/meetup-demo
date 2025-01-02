@@ -1,13 +1,10 @@
-import { AppSidebar } from "@/components/AppSidebar";
 import { DefaultCatchBoundary } from "@/components/DefaultCatchBoundary";
 import { NotFound } from "@/components/NotFound";
 
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "@/styles/app.css?url";
 import { seo } from "@/utils/seo";
-import { usersQueryOptions } from "@/utils/users";
 import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
@@ -49,22 +46,6 @@ export const Route = createRootRouteWithContext<{
     );
   },
   notFoundComponent: () => <NotFound />,
-  validateSearch: (
-    search: Record<string, unknown>,
-  ): { q: string } | undefined => {
-    if (!search.q) {
-      return undefined;
-    }
-
-    return { q: String(search.q) };
-  },
-  loaderDeps: ({ search }) => {
-    return { q: search.q };
-  },
-  loader: async ({ context, deps }) => {
-    const query = deps.q;
-    await context.queryClient.ensureQueryData(usersQueryOptions(query));
-  },
   component: RootComponent,
 });
 
@@ -83,11 +64,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Meta />
       </head>
       <body>
-        <SidebarProvider>
-          <AppSidebar />
-          <main className="p-4 w-full">{children}</main>
-          <Toaster richColors />
-        </SidebarProvider>
+        {children}
+        <Toaster richColors />
 
         <ScrollRestoration />
         <TanStackRouterDevtools position="bottom-right" />
