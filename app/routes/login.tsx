@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { authMiddleware } from "@/middleware";
+
 import * as zod from "zod";
 
 import { authClient, signIn } from "@/lib/auth-client";
@@ -25,31 +25,29 @@ export const contactFormSchema = zod.object({
   }),
 });
 
-export const loginUser = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
-  .handler(
+export const loginUser = createServerFn({ method: "POST" }).handler(
+  // @ts-ignore
+  async ({ data: formData }) => {
     // @ts-ignore
-    async ({ data: formData }) => {
-      // @ts-ignore
-      const submission = parseWithZod(formData, { schema: contactFormSchema });
+    const submission = parseWithZod(formData, { schema: contactFormSchema });
 
-      if (submission.status !== "success") {
-        console.log("submission not successfull!");
-        return json(submission.reply());
-      }
+    if (submission.status !== "success") {
+      console.log("submission not successfull!");
+      return json(submission.reply());
+    }
 
-      const { data, error } = await signIn.email({
-        email: submission.value.email,
-        password: submission.value.password,
-      });
+    const { data, error } = await signIn.email({
+      email: submission.value.email,
+      password: submission.value.password,
+    });
 
-      if (error !== null && data === null) {
-        return { error, data: null };
-      }
+    if (error !== null && data === null) {
+      return { error, data: null };
+    }
 
-      return { data, error: null };
-    },
-  );
+    return { data, error: null };
+  },
+);
 
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
