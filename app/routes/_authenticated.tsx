@@ -31,7 +31,6 @@ export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ location }) => {
     const isLoggedIn = await isAuthenticated();
 
-    console.log({ isLoggedIn }, "[isLoggedIn]");
     if (!isLoggedIn) {
       throw redirect({
         to: "/login",
