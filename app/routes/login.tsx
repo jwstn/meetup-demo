@@ -25,30 +25,6 @@ export const contactFormSchema = zod.object({
   }),
 });
 
-export const loginUser = createServerFn({ method: "POST" }).handler(
-  // @ts-ignore
-  async ({ data: formData }) => {
-    // @ts-ignore
-    const submission = parseWithZod(formData, { schema: contactFormSchema });
-
-    if (submission.status !== "success") {
-      console.log("submission not successfull!");
-      return json(submission.reply());
-    }
-
-    const { data, error } = await signIn.email({
-      email: submission.value.email,
-      password: submission.value.password,
-    });
-
-    if (error !== null && data === null) {
-      return { error, data: null };
-    }
-
-    return { data, error: null };
-  },
-);
-
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
 });
@@ -70,18 +46,19 @@ function RouteComponent() {
 
       const formData = new FormData(event.target);
 
-      const { data, error } = await loginUser({
-        data: formData,
+      const { data, error } = await signIn.email({
+        email: String(formData.get("email")),
+        password: String(formData.get("password")),
       });
 
-      if (error !== null && error.message) {
+      if (error?.message) {
         return toast.error(error.message);
       }
 
       navigate({ to: "/" });
 
       toast.success("Login successfull 🚀", {
-        description: `You are now logged in as ${data.user.name}`,
+        description: `You are now logged in as ${data?.user.name}`,
       });
     },
   });
