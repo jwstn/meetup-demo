@@ -108,7 +108,10 @@ function RouteComponent() {
                   <h1 className="text-xl font-bold">Welcome to Acme Inc.</h1>
                   <div className="text-center text-sm">
                     Don&apos;t have an account?{" "}
-                    <Link to="/sign-up" className="underline underline-offset-4">
+                    <Link
+                      to="/sign-up"
+                      className="underline underline-offset-4"
+                    >
                       Sign up
                     </Link>
                   </div>
@@ -124,7 +127,9 @@ function RouteComponent() {
                       placeholder="m@example.com"
                       required
                     />
-                    <span className="text-sm text-red-500">{fields.email?.errors}</span>
+                    <span className="text-sm text-red-500">
+                      {fields.email?.errors}
+                    </span>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor={fields.password.name}>Password</Label>

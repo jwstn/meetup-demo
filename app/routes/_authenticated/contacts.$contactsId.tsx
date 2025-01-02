@@ -10,7 +10,9 @@ import type { FormEvent } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/contacts/$contactsId")({
-  validateSearch: (search: Record<string, unknown>): { q: string } | undefined => {
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { q: string } | undefined => {
     if (!search.q) {
       return undefined;
     }
@@ -38,7 +40,9 @@ function ContactComponent() {
   const params = Route.useParams();
   const navigate = Route.useNavigate();
   const search = Route.useSearch();
-  const { data: contact } = useSuspenseQuery(contactQueryOptions(params.contactsId));
+  const { data: contact } = useSuspenseQuery(
+    contactQueryOptions(params.contactsId),
+  );
   const queryClient = useQueryClient();
 
   async function handleSubmit(event: FormEvent) {

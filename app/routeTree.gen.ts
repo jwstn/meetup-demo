@@ -49,13 +49,12 @@ const AuthenticatedContactsNewRoute = AuthenticatedContactsNewImport.update({
   getParentRoute: () => AuthenticatedRoute,
 } as any);
 
-const AuthenticatedContactsContactsIdRoute = AuthenticatedContactsContactsIdImport.update(
-  {
+const AuthenticatedContactsContactsIdRoute =
+  AuthenticatedContactsContactsIdImport.update({
     id: "/contacts/$contactsId",
     path: "/contacts/$contactsId",
     getParentRoute: () => AuthenticatedRoute,
-  } as any,
-);
+  } as any);
 
 // Populate the FileRoutesByPath interface
 
@@ -153,7 +152,13 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "" | "/login" | "/sign-up" | "/" | "/contacts/$contactsId" | "/contacts/new";
+  fullPaths:
+    | ""
+    | "/login"
+    | "/sign-up"
+    | "/"
+    | "/contacts/$contactsId"
+    | "/contacts/new";
   fileRoutesByTo: FileRoutesByTo;
   to: "/login" | "/sign-up" | "/" | "/contacts/$contactsId" | "/contacts/new";
   id:

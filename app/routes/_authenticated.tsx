@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
-import { contactQueryOptions } from "@/utils/contacts";
+import { contactsQueryOptions } from "@/utils/contacts";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/start";
 import { toast } from "sonner";
@@ -12,7 +12,10 @@ const isAuthenticated = createServerFn({ method: "GET" }).handler(async () => {
   const { headers } = getWebRequest();
   const session = await auth.api.getSession({ headers });
 
-  console.log({ session, user: session?.user }, "[session isAuthenticated serverFn]");
+  console.log(
+    { session: session?.session, user: session?.user },
+    "[session isAuthenticated serverFn]",
+  );
 
   if (!session?.user.id) {
     toast.warning("Session is missing", {
@@ -38,7 +41,9 @@ export const Route = createFileRoute("/_authenticated")({
       });
     }
   },
-  validateSearch: (search: Record<string, unknown>): { q: string } | undefined => {
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { q: string } | undefined => {
     if (!search.q) {
       return undefined;
     }
@@ -50,7 +55,7 @@ export const Route = createFileRoute("/_authenticated")({
   },
   loader: async ({ context, deps }) => {
     const query = deps.q;
-    await context.queryClient.ensureQueryData(contactQueryOptions(query));
+    await context.queryClient.ensureQueryData(contactsQueryOptions(query));
   },
   component: AuthenticatedRootComponent,
 });

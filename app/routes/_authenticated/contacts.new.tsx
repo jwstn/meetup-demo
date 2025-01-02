@@ -30,7 +30,9 @@ export const createContactFormSchema = zod.object({
 });
 
 export const Route = createFileRoute("/_authenticated/contacts/new")({
-  validateSearch: (search: Record<string, unknown>): { q: string } | undefined => {
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { q: string } | undefined => {
     if (!search.q) {
       return undefined;
     }
@@ -122,7 +124,10 @@ function RouteComponent() {
         </div>
         <div className="flex space-x-2">
           <Button type="submit">Submit</Button>
-          <Link to="/" className={cn(buttonVariants({ variant: "destructive" }))}>
+          <Link
+            to="/"
+            className={cn(buttonVariants({ variant: "destructive" }))}
+          >
             Cancel
           </Link>
         </div>

@@ -125,7 +125,9 @@ function RouteComponent() {
                       placeholder="John Doe"
                       required
                     />
-                    <span className="text-sm text-red-500">{fields.name.errors}</span>
+                    <span className="text-sm text-red-500">
+                      {fields.name.errors}
+                    </span>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor={fields.email.name}>Email</Label>
@@ -137,7 +139,9 @@ function RouteComponent() {
                       placeholder="foo@bar.baz"
                       required
                     />
-                    <span className="text-sm text-red-500">{fields.email.errors}</span>
+                    <span className="text-sm text-red-500">
+                      {fields.email.errors}
+                    </span>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor={fields.password.name}>Password</Label>
@@ -149,7 +153,9 @@ function RouteComponent() {
                       placeholder="*********"
                       required
                     />
-                    <span className="text-sm text-red-500">{fields.password.errors}</span>
+                    <span className="text-sm text-red-500">
+                      {fields.password.errors}
+                    </span>
                   </div>
                   <Button type="submit" className="w-full">
                     Sign-Up

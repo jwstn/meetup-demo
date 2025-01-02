@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import { contactQueryOptions } from "@/utils/contacts";
+import { contactsQueryOptions } from "@/utils/contacts";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 
@@ -22,7 +22,7 @@ import { PlusCircleIcon } from "lucide-react";
 export function AppSidebar() {
   const { q } = Route.useSearch();
 
-  const contacts = useSuspenseQuery(contactQueryOptions(q));
+  const contacts = useSuspenseQuery(contactsQueryOptions(q));
   return (
     <Sidebar>
       <SidebarContent>
@@ -47,7 +47,11 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarGroupLabel className="text-base flex justify-between">
               Contacts
-              <Link className="text-sm text-muted-foreground" to="/" search={() => {}}>
+              <Link
+                className="text-sm text-muted-foreground"
+                to="/"
+                search={() => {}}
+              >
                 Reset
               </Link>
             </SidebarGroupLabel>

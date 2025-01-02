@@ -6,7 +6,10 @@ import { like } from "drizzle-orm";
 
 export const APIRoute = createAPIFileRoute("/api/contacts/search/$query")({
   GET: async ({ request, params }) => {
-    console.info(`Fetching contacts by query=${params.query}... @`, request.url);
+    console.info(
+      `Fetching contacts by query=${params.query}... @`,
+      request.url,
+    );
 
     try {
       if (params.query === "undefined") {

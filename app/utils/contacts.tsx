@@ -45,7 +45,9 @@ export const createContact = createServerFn({ method: "POST" }).handler(
 export const deleteContact = createServerFn({ method: "POST" }).handler(
   // @ts-ignore
   async ({ data: { id } }) => {
-    await db.delete(contactsTable).where(eq(contactsTable.id, Number.parseInt(id)));
+    await db
+      .delete(contactsTable)
+      .where(eq(contactsTable.id, Number.parseInt(id)));
     return json({ message: "Contact deleted successfully" }, { status: 200 });
   },
 );
