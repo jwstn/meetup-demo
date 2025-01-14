@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
+import type { User } from "@/types";
 import { createContact } from "@/utils/contacts";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -65,15 +66,19 @@ function RouteComponent() {
 
       const formData = new FormData(event.currentTarget);
 
-      const contact = await createContact({
+      const newContact = (await createContact({
         data: formData,
-      });
+      })) as unknown as User;
 
       queryClient.invalidateQueries({
         queryKey: ["contacts", "search", search?.q],
       });
       toast.success("User created Successfully!");
-      navigate({ to: "/" });
+      navigate({
+        to: "/contacts/$contactsId",
+        params: { contactsId: String(newContact.id) },
+        search,
+      });
     },
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",

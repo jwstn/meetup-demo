@@ -38,7 +38,7 @@ export const createContact = createServerFn({ method: "POST" }).handler(
       .values({ ...submission.value })
       .returning();
 
-    return json({ ...contact[0] }, { status: 200 });
+    return { ...contact[0] };
   },
 );
 
