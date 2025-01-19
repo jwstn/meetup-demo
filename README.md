@@ -51,7 +51,9 @@ There are also community blocks that enable you to copy paste complete pages for
 
 The `db` folder contains the [`schema`](./app/db/schema.ts) and the  [`database client`](./app/db/index.ts). Since im using the [Drizzle ORM](https://orm.drizzle.team/) I don't need to write sql to create my database tables but rather can just use javascript. [Drizzle](https://orm.drizzle.team/) also provides different databases (postgress, SQLite, etc.) adapters, which makes it easy to switch from one to the other, if you for example just want to create your application quickly with a locale database and move it to an remote database ([supabase](https://supabase.com/)) provider later.
 
-### Drizzle
+#### Drizzle
+
+On that note, the drizzle folder contains the needed meta data, like migration and snapshot files, which allow drizzle to propt what changed in the schema, before pushing it into your database.
 
 ### hooks
 
