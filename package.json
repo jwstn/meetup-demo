@@ -9,7 +9,11 @@
     "start": "vinxi start",
     "format": "pnpm biome format --write",
     "lint": "pnpm biome lint --write",
-    "check": "pnpm biome check --write"
+    "check": "pnpm biome check --write",
+    "generate": "npx drizzle-kit generate",
+    "migrate": "npx drizzle-kit migrate",
+    "push": "npx drizzle-kit push",
+    "studio": "pnpm drizzle-kit studio"
   },
   "dependencies": {
     "@conform-to/react": "^1.2.2",
@@ -48,6 +52,7 @@
     "@tanstack/react-router-with-query": "^1.91.3",
     "@tanstack/router-devtools": "^1.91.3",
     "@tanstack/start": "^1.91.3",
+    "better-auth": "^1.1.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",

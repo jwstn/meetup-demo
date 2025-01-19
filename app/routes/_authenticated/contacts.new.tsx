@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import type { FormEvent } from "react";
+
 import * as zod from "zod";
 
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -12,13 +12,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-import { createUser } from "@/utils/users";
+import type { User } from "@/types";
+import { createContact } from "@/utils/contacts";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export const createUserFormSchema = zod.object({
+export const createContactFormSchema = zod.object({
   name: zod.string().min(2, {
-    message: "Username must be at least 2 characters.",
+    message: "contact must be at least 2 characters.",
   }),
   email: zod
     .string()
@@ -29,7 +30,7 @@ export const createUserFormSchema = zod.object({
   description: zod.string().optional(),
 });
 
-export const Route = createFileRoute("/users/new")({
+export const Route = createFileRoute("/_authenticated/contacts/new")({
   validateSearch: (
     search: Record<string, unknown>,
   ): { q: string } | undefined => {
@@ -52,7 +53,7 @@ function RouteComponent() {
 
   const [form, fields] = useForm({
     onValidate: ({ formData }) => {
-      return parseWithZod(formData, { schema: createUserFormSchema });
+      return parseWithZod(formData, { schema: createContactFormSchema });
     },
     defaultValue: {
       name: "",
@@ -65,15 +66,19 @@ function RouteComponent() {
 
       const formData = new FormData(event.currentTarget);
 
-      const user = await createUser({
+      const newContact = (await createContact({
         data: formData,
-      });
+      })) as unknown as User;
 
       queryClient.invalidateQueries({
-        queryKey: ["users", "search", search?.q],
+        queryKey: ["contacts", "search", search?.q],
       });
       toast.success("User created Successfully!");
-      navigate({ to: "/" });
+      navigate({
+        to: "/contacts/$contactsId",
+        params: { contactsId: String(newContact.id) },
+        search,
+      });
     },
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",
