@@ -33,12 +33,12 @@ export const createContact = createServerFn({ method: "POST" }).handler(
       return json(submission.reply());
     }
 
-    const contact = await db
+    const [contact] = await db
       .insert(contactsTable)
       .values({ ...submission.value })
       .returning();
 
-    return { ...contact[0] };
+    return contact;
   },
 );
 
