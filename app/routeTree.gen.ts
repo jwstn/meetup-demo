@@ -11,117 +11,177 @@
 // Import Routes
 
 import { Route as rootRoute } from "./routes/__root";
-import { Route as DeferredImport } from "./routes/deferred";
-import { Route as IndexImport } from "./routes/index";
-import { Route as UsersNewImport } from "./routes/users.new";
-import { Route as UsersUserIdImport } from "./routes/users.$userId";
+import { Route as SignUpImport } from "./routes/sign-up";
+import { Route as LoginImport } from "./routes/login";
+import { Route as AuthenticatedImport } from "./routes/_authenticated";
+import { Route as AuthenticatedIndexImport } from "./routes/_authenticated/index";
+import { Route as AuthenticatedContactsNewImport } from "./routes/_authenticated/contacts.new";
+import { Route as AuthenticatedContactsContactsIdImport } from "./routes/_authenticated/contacts.$contactsId";
 
 // Create/Update Routes
 
-const DeferredRoute = DeferredImport.update({
-  id: "/deferred",
-  path: "/deferred",
+const SignUpRoute = SignUpImport.update({
+  id: "/sign-up",
+  path: "/sign-up",
   getParentRoute: () => rootRoute,
 } as any);
 
-const IndexRoute = IndexImport.update({
+const LoginRoute = LoginImport.update({
+  id: "/login",
+  path: "/login",
+  getParentRoute: () => rootRoute,
+} as any);
+
+const AuthenticatedRoute = AuthenticatedImport.update({
+  id: "/_authenticated",
+  getParentRoute: () => rootRoute,
+} as any);
+
+const AuthenticatedIndexRoute = AuthenticatedIndexImport.update({
   id: "/",
   path: "/",
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => AuthenticatedRoute,
 } as any);
 
-const UsersNewRoute = UsersNewImport.update({
-  id: "/users/new",
-  path: "/users/new",
-  getParentRoute: () => rootRoute,
+const AuthenticatedContactsNewRoute = AuthenticatedContactsNewImport.update({
+  id: "/contacts/new",
+  path: "/contacts/new",
+  getParentRoute: () => AuthenticatedRoute,
 } as any);
 
-const UsersUserIdRoute = UsersUserIdImport.update({
-  id: "/users/$userId",
-  path: "/users/$userId",
-  getParentRoute: () => rootRoute,
-} as any);
+const AuthenticatedContactsContactsIdRoute =
+  AuthenticatedContactsContactsIdImport.update({
+    id: "/contacts/$contactsId",
+    path: "/contacts/$contactsId",
+    getParentRoute: () => AuthenticatedRoute,
+  } as any);
 
 // Populate the FileRoutesByPath interface
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    "/": {
-      id: "/";
+    "/_authenticated": {
+      id: "/_authenticated";
+      path: "";
+      fullPath: "";
+      preLoaderRoute: typeof AuthenticatedImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/login": {
+      id: "/login";
+      path: "/login";
+      fullPath: "/login";
+      preLoaderRoute: typeof LoginImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/sign-up": {
+      id: "/sign-up";
+      path: "/sign-up";
+      fullPath: "/sign-up";
+      preLoaderRoute: typeof SignUpImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/_authenticated/": {
+      id: "/_authenticated/";
       path: "/";
       fullPath: "/";
-      preLoaderRoute: typeof IndexImport;
-      parentRoute: typeof rootRoute;
+      preLoaderRoute: typeof AuthenticatedIndexImport;
+      parentRoute: typeof AuthenticatedImport;
     };
-    "/deferred": {
-      id: "/deferred";
-      path: "/deferred";
-      fullPath: "/deferred";
-      preLoaderRoute: typeof DeferredImport;
-      parentRoute: typeof rootRoute;
+    "/_authenticated/contacts/$contactsId": {
+      id: "/_authenticated/contacts/$contactsId";
+      path: "/contacts/$contactsId";
+      fullPath: "/contacts/$contactsId";
+      preLoaderRoute: typeof AuthenticatedContactsContactsIdImport;
+      parentRoute: typeof AuthenticatedImport;
     };
-    "/users/$userId": {
-      id: "/users/$userId";
-      path: "/users/$userId";
-      fullPath: "/users/$userId";
-      preLoaderRoute: typeof UsersUserIdImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/users/new": {
-      id: "/users/new";
-      path: "/users/new";
-      fullPath: "/users/new";
-      preLoaderRoute: typeof UsersNewImport;
-      parentRoute: typeof rootRoute;
+    "/_authenticated/contacts/new": {
+      id: "/_authenticated/contacts/new";
+      path: "/contacts/new";
+      fullPath: "/contacts/new";
+      preLoaderRoute: typeof AuthenticatedContactsNewImport;
+      parentRoute: typeof AuthenticatedImport;
     };
   }
 }
 
 // Create and export the route tree
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute;
+  AuthenticatedContactsContactsIdRoute: typeof AuthenticatedContactsContactsIdRoute;
+  AuthenticatedContactsNewRoute: typeof AuthenticatedContactsNewRoute;
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedContactsContactsIdRoute: AuthenticatedContactsContactsIdRoute,
+  AuthenticatedContactsNewRoute: AuthenticatedContactsNewRoute,
+};
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+);
+
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/deferred": typeof DeferredRoute;
-  "/users/$userId": typeof UsersUserIdRoute;
-  "/users/new": typeof UsersNewRoute;
+  "": typeof AuthenticatedRouteWithChildren;
+  "/login": typeof LoginRoute;
+  "/sign-up": typeof SignUpRoute;
+  "/": typeof AuthenticatedIndexRoute;
+  "/contacts/$contactsId": typeof AuthenticatedContactsContactsIdRoute;
+  "/contacts/new": typeof AuthenticatedContactsNewRoute;
 }
 
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/deferred": typeof DeferredRoute;
-  "/users/$userId": typeof UsersUserIdRoute;
-  "/users/new": typeof UsersNewRoute;
+  "/login": typeof LoginRoute;
+  "/sign-up": typeof SignUpRoute;
+  "/": typeof AuthenticatedIndexRoute;
+  "/contacts/$contactsId": typeof AuthenticatedContactsContactsIdRoute;
+  "/contacts/new": typeof AuthenticatedContactsNewRoute;
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute;
-  "/": typeof IndexRoute;
-  "/deferred": typeof DeferredRoute;
-  "/users/$userId": typeof UsersUserIdRoute;
-  "/users/new": typeof UsersNewRoute;
+  "/_authenticated": typeof AuthenticatedRouteWithChildren;
+  "/login": typeof LoginRoute;
+  "/sign-up": typeof SignUpRoute;
+  "/_authenticated/": typeof AuthenticatedIndexRoute;
+  "/_authenticated/contacts/$contactsId": typeof AuthenticatedContactsContactsIdRoute;
+  "/_authenticated/contacts/new": typeof AuthenticatedContactsNewRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/deferred" | "/users/$userId" | "/users/new";
+  fullPaths:
+    | ""
+    | "/login"
+    | "/sign-up"
+    | "/"
+    | "/contacts/$contactsId"
+    | "/contacts/new";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/deferred" | "/users/$userId" | "/users/new";
-  id: "__root__" | "/" | "/deferred" | "/users/$userId" | "/users/new";
+  to: "/login" | "/sign-up" | "/" | "/contacts/$contactsId" | "/contacts/new";
+  id:
+    | "__root__"
+    | "/_authenticated"
+    | "/login"
+    | "/sign-up"
+    | "/_authenticated/"
+    | "/_authenticated/contacts/$contactsId"
+    | "/_authenticated/contacts/new";
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  DeferredRoute: typeof DeferredRoute;
-  UsersUserIdRoute: typeof UsersUserIdRoute;
-  UsersNewRoute: typeof UsersNewRoute;
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren;
+  LoginRoute: typeof LoginRoute;
+  SignUpRoute: typeof SignUpRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  DeferredRoute: DeferredRoute,
-  UsersUserIdRoute: UsersUserIdRoute,
-  UsersNewRoute: UsersNewRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  LoginRoute: LoginRoute,
+  SignUpRoute: SignUpRoute,
 };
 
 export const routeTree = rootRoute
@@ -134,23 +194,36 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
-        "/deferred",
-        "/users/$userId",
-        "/users/new"
+        "/_authenticated",
+        "/login",
+        "/sign-up"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/_authenticated": {
+      "filePath": "_authenticated.tsx",
+      "children": [
+        "/_authenticated/",
+        "/_authenticated/contacts/$contactsId",
+        "/_authenticated/contacts/new"
+      ]
     },
-    "/deferred": {
-      "filePath": "deferred.tsx"
+    "/login": {
+      "filePath": "login.tsx"
     },
-    "/users/$userId": {
-      "filePath": "users.$userId.tsx"
+    "/sign-up": {
+      "filePath": "sign-up.tsx"
     },
-    "/users/new": {
-      "filePath": "users.new.tsx"
+    "/_authenticated/": {
+      "filePath": "_authenticated/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/contacts/$contactsId": {
+      "filePath": "_authenticated/contacts.$contactsId.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/contacts/new": {
+      "filePath": "_authenticated/contacts.new.tsx",
+      "parent": "/_authenticated"
     }
   }
 }
