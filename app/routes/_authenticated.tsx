@@ -12,11 +12,6 @@ const isAuthenticated = createServerFn({ method: "GET" }).handler(async () => {
   const { headers } = getWebRequest();
   const session = await auth.api.getSession({ headers });
 
-  console.log(
-    { session: session?.session, user: session?.user },
-    "[session isAuthenticated serverFn]",
-  );
-
   if (!session?.user.id) {
     toast.warning("Session is missing", {
       description: "Something happend",
