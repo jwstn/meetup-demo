@@ -87,7 +87,7 @@ export function AppSidebar() {
               <Link
                 className="text-sm text-muted-foreground"
                 to="/"
-                search={() => {}}
+                search={() => { }}
               >
                 Reset
               </Link>
